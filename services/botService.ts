@@ -6,13 +6,14 @@ export class BotService {
   private contactModel: typeof Contact;
 
   constructor() {
+    this.contactModel = Contact;
     this.bot = new TelegramBot(process.env.BOT_TOKEN || "", {
       polling: true,
     });
-    this.contactModel = Contact;
+
     this.bot.setMyCommands([
       { command: "/start", description: "Start" },
-      { command: "/заявки", description: "Показать все заявки" },
+      { command: "/сontacts", description: "Показать все заявки" },
       { command: "/заявки_за_день", description: "Показать заявки за день" },
       {
         command: "/заявки_за_7_дней",
@@ -35,7 +36,7 @@ export class BotService {
           case "/start":
             await this.sendMessage(
               msg.chat.id,
-              "Привет! Я бот для обработки заявок. Чтобы увидеть все заявки, введи команду /contacts"
+              "Привет! Я бот для обработки заявок."
             );
             break;
 
@@ -125,5 +126,3 @@ export class BotService {
     );
   }
 }
-
-new BotService();

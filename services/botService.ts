@@ -1,13 +1,12 @@
 import TelegramBot from "node-telegram-bot-api";
 import { Contact, ContactDocument } from "../models/contacts.model";
-import { Config } from "../config";
 
 export class BotService {
   private bot: TelegramBot;
   private contactModel: typeof Contact;
 
   constructor() {
-    this.bot = new TelegramBot(Config.get("BOT_TOKEN"), {
+    this.bot = new TelegramBot(process.env.BOT_TOKEN || "", {
       polling: true,
     });
     this.contactModel = Contact;

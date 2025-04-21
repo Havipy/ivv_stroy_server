@@ -13,7 +13,6 @@ class BotService {
 
     this.bot.setMyCommands([
       { command: "/start", description: "Start" },
-      { command: "/contacts", description: "Показать все заявки" },
       { command: "/last_day_contacts", description: "Показать заявки за день" },
       {
         command: "/last_7_days_contacts",
@@ -34,14 +33,6 @@ class BotService {
             await this.sendMessage(
               msg.chat.id,
               "Привет! Я бот для обработки заявок."
-            );
-            break;
-
-          case "/contacts":
-            const allContacts = await this.contactModel.find();
-            await this.sendMessage(
-              msg.chat.id,
-              this.formatContacts(allContacts)
             );
             break;
 

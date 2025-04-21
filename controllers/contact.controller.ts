@@ -1,3 +1,4 @@
+import { BotService } from "../services/botService";
 import { ContactService } from "../services/contactsService";
 import { Request, Response } from "express";
 
@@ -10,6 +11,10 @@ class ContactController {
         name,
         phone,
         message,
+      });
+
+      BotService.sendNewContactNotification(contactDoc).catch((error) => {
+        console.log(error);
       });
 
       res.status(201).json({

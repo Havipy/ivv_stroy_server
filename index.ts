@@ -4,7 +4,6 @@ import { router } from "./routes/contacts.routes";
 import mongoose from "mongoose";
 import "dotenv/config";
 import bodyParser from "body-parser";
-import { BotService } from "./services/botService";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,7 +23,5 @@ mongoose
   .then(() => {
     console.log("connected to mongodb successfully");
   })
-  .then(() => {
-    new BotService();
-  })
+
   .catch((error) => console.log(error));

@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { Contact, ContactDocument } from "../models/contacts.model";
-
-export class BotService {
+import { BotUser } from "../models/bot-user.model";
+class BotService {
   private bot: TelegramBot;
   private contactModel: typeof Contact;
 
@@ -25,22 +25,19 @@ export class BotService {
       try {
         if (!msg.text) return;
 
-        /*  if (msg.chat.id !== +(process.env.ADMIN_CHAT_ID || "")) {
-          await this.sendMessage(
-            msg.chat.id,
-            "Вы не можете отправлять сообщения этому боту."
-          );
-        } */
-
         switch (msg.text) {
           case "/start":
+            const user = await BotUser.findOne({ tgId: msg.chat.id });
+            if (!user) {
+              await BotUser.create({ tgId: msg.chat.id });
+            }
             await this.sendMessage(
               msg.chat.id,
               "Привет! Я бот для обработки заявок."
             );
             break;
 
-          case "/заявки":
+          case "/contacts":
             const allContacts = await this.contactModel.find();
             await this.sendMessage(
               msg.chat.id,
@@ -48,7 +45,7 @@ export class BotService {
             );
             break;
 
-          case "/заявки_за_день":
+          case "/last_day_contacts":
             const todayContacts = await this.contactModel.find({
               createdAt: {
                 $gte: new Date(new Date().setHours(0, 0, 0)),
@@ -61,7 +58,7 @@ export class BotService {
             );
             break;
 
-          case "/заявки_за_7_дней":
+          case "/last_7_days_contacts":
             const weekAgo = new Date(
               new Date().setDate(new Date().getDate() - 7)
             );
@@ -81,7 +78,7 @@ export class BotService {
           default:
             await this.sendMessage(
               msg.chat.id,
-              "Неизвестная команда. Попробуйте /start, /заявки или /заявки_за_день, /заявки_за_7_дней."
+              "Неизвестная команда. Попробуйте /start, /contacts, /last_day_contacts или /last_7_days_contacts."
             );
             break;
         }
@@ -118,11 +115,14 @@ export class BotService {
     return this.bot.sendMessage(chatId, text);
   }
 
-  sendNewContactNotification(contact: ContactDocument) {
-    return this.bot.sendMessage(
-      process.env.ADMIN_CHAT_ID || "",
-      this.formatNewContact(contact),
-      { parse_mode: "Markdown" }
-    );
+  async sendNewContactNotification(contact: ContactDocument) {
+    const users = await BotUser.find();
+    users.forEach((user) => {
+      this.bot.sendMessage(user.tgId, this.formatNewContact(contact), {
+        parse_mode: "Markdown",
+      });
+    });
   }
 }
+const botService = new BotService();
+export { botService as BotService };

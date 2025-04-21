@@ -5,12 +5,12 @@ import { Request, Response } from "express";
 class ContactController {
   async createContact(req: Request, res: Response) {
     try {
-      const { name, phone, message } = req.body;
+      const { name, phone, comment } = req.body;
 
       const contactDoc = await ContactService.createContact({
         name,
         phone,
-        message,
+        message: comment,
       });
 
       BotService.sendNewContactNotification(contactDoc).catch((error) => {

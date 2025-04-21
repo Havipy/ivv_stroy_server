@@ -13,10 +13,10 @@ class BotService {
 
     this.bot.setMyCommands([
       { command: "/start", description: "Start" },
-      { command: "/сontacts", description: "Показать все заявки" },
-      { command: "/заявки_за_день", description: "Показать заявки за день" },
+      { command: "/contacts", description: "Показать все заявки" },
+      { command: "/last_day_contacts", description: "Показать заявки за день" },
       {
-        command: "/заявки_за_7_дней",
+        command: "/last_7_days_contacts",
         description: "Показать заявки за 7 дней",
       },
     ]);
